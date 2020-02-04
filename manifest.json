@@ -1,0 +1,31 @@
+{
+
+    "manifest_version": 2,
+    "name": "Youtube audio library downloader",
+    "version": "0.1",
+  
+    "description": "Adds ability to download multiple tracks from youtube.com/audiolibrary",
+
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "downloads",
+        "downloads.open",
+        "storage"
+      ],
+
+    "content_scripts": [
+      {
+        "matches": ["*://*.youtube.com/audiolibrary/*"],
+        "js": ["downloader.js"]
+      }
+    ],
+
+    "background": {     
+        "scripts": ["background.js"]     
+    },
+  
+    "page_action": {
+      "default_popup": "popup.html"
+    }
+  }
