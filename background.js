@@ -15,7 +15,7 @@ function download(downloadTargets) {
     item = downloadTargets.shift();
     chrome.storage.local.get([item.title], items => {
         if(items[item.title] !== true) {
-            chrome.downloads.download({url: item.url, filename: item.fileName}, function(id) { 
+            chrome.downloads.download({url: item.url, filename: item.fileName}, id => { 
                 const currentId = id;
                 function onChanged({id, state}) {
                     if (id === currentId && state) {
