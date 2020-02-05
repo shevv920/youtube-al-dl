@@ -5,9 +5,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         if (msg.action === "start" && msg.items)
             download(msg.items);
         });
-    } else {
-        console.log(port.name);
-    }
+    } 
   });
 
 
