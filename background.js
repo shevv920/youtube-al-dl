@@ -20,7 +20,6 @@ function download(downloadTargets) {
             chrome.downloads.download({url: item.url, filename: item.fileName}, function(id) { 
                 const currentId = id;
                 function onChanged({id, state}) {
-                    console.log("downloads changed: " + state.current);
                     if (id === currentId && state) {
                         switch(state.current) {
                             case 'complete':
