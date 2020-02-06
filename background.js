@@ -3,13 +3,13 @@ chrome.runtime.onConnect.addListener(function(port) {
     if(port.name === 'yald') {
         port.onMessage.addListener(function(msg) {
         if (msg.action === "start" && msg.items)
-            download(msg.items);
+        downloadSequentially(msg.items);
         });
     } 
   });
 
 
-function download(downloadTargets) {
+function downloadSequentially(downloadTargets) {
     if(!downloadTargets) return;   
 
     item = downloadTargets.shift();
@@ -22,7 +22,7 @@ function download(downloadTargets) {
                             case 'complete':
                                 chrome.downloads.onChanged.removeListener(onChanged);                             
                                 chrome.storage.local.set({[item.title]: true})
-                                download(downloadTargets);
+                                downloadSequentially(downloadTargets);
                                 break;
                             case 'interrupted': 
                                 chrome.downloads.resume(currentId); 
@@ -35,7 +35,7 @@ function download(downloadTargets) {
                 chrome.downloads.onChanged.addListener(onChanged)
             });  
         } else {
-            download(downloadTargets);
+            downloadSequentially(downloadTargets);
         }
     } );
      
