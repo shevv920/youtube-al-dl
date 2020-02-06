@@ -1,9 +1,9 @@
 
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnect.addListener(port => {
     if(port.name === 'yald') {
-        port.onMessage.addListener(function(msg) {
-        if (msg.action === "start" && msg.items)
-        downloadSequentially(msg.items);
+        port.onMessage.addListener(msg => {
+            if (msg.action === "start" && msg.items)
+            downloadSequentially(msg.items);
         });
     } 
   });
