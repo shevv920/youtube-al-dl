@@ -9,7 +9,6 @@ button.onclick   = () => sendMessage();
 alSubtitle.appendChild(button);
 
 let port = chrome.runtime.connect({name: "yald"}); 
-let tracks = Array.from(document.querySelectorAll(".audiolibrary-track-head")).filter(elem => elem.children.length > 0);
 
 function sendMessage() {
     let tracks = Array.from(document.querySelectorAll(".audiolibrary-track-head")).filter(elem => elem.children.length > 0);
