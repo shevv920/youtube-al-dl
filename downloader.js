@@ -1,23 +1,46 @@
-//
+let downloading = false;
 let alSubtitle = document.querySelector("#audio-library-content > div.audio-library-tab-subtitle");
 
 let button       = document.createElement("div");
 button.innerHTML = "Start downloading";
 button.id        = "start-download-button";
 button.style     = "border: 2px solid #e62117;background: aliceblue;cursor: pointer;padding: 3px; font-family: monospace;display:inline";
-button.onclick   = () => sendMessage();
+button.onclick   = () => toggleDownloading();
 alSubtitle.appendChild(button);
 
 let port = chrome.runtime.connect({name: "yald"}); 
+port.onMessage.addListener(msg => {
+  switch (msg) {
+    case "started":
+      downloading = true;
+      button.innerHTML = "Stop downloading"; 
+      break;
+    case "stopped": 
+      downloading = false;
+      button.innerHTML = "Start download"; 
+      break;
+    default: 
+      break;
+  }
+});
 
-function sendMessage() {
-    let tracks = Array.from(document.querySelectorAll(".audiolibrary-track-head")).filter(elem => elem.children.length > 0);
-
-    let downloadTargets = tracks.map(elem => {
-        const title = elem.querySelector(".audiolibrary-column-title").textContent;
-        const url   = elem.querySelector(".audiolibrary-column-download > a").getAttribute("href");
-        return {title: title, fileName : title + ".mp3", url: url};
+function getDownloadTargets() {
+  Array.from(document.querySelectorAll(".audiolibrary-track-head"))
+    .filter(elem => elem.children.length > 0)
+    .map(elem => {
+      const title = elem.querySelector(".audiolibrary-column-title").textContent;
+      const url   = elem.querySelector(".audiolibrary-column-download > a").getAttribute("href");
+      return {title: title, fileName : title + ".mp3", url: url};
     });
+}
 
-    port.postMessage({action: "start", items: downloadTargets});
+function toggleDownloading() { 
+  if(downloading) 
+    sendMessage("stop");    
+  else 
+    sendMessage("start", getDownloadTargets());        
+}
+
+function sendMessage(action, downloadTargets) { 
+  port.postMessage({action: action, items: downloadTargets});
 }
