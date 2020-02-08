@@ -10,7 +10,7 @@ alSubtitle.appendChild(button);
 
 let port = chrome.runtime.connect({name: "yald"}); 
 port.onMessage.addListener(msg => {
-  switch (msg) {
+  switch (msg.action) {
     case "started":
       downloading = true;
       button.innerHTML = "Stop downloading"; 
@@ -25,20 +25,22 @@ port.onMessage.addListener(msg => {
 });
 
 function getDownloadTargets() {
-  Array.from(document.querySelectorAll(".audiolibrary-track-head"))
+  const targets = Array.from(document.querySelectorAll(".audiolibrary-track-head"))
     .filter(elem => elem.children.length > 0)
     .map(elem => {
       const title = elem.querySelector(".audiolibrary-column-title").textContent;
       const url   = elem.querySelector(".audiolibrary-column-download > a").getAttribute("href");
       return {title: title, fileName : title + ".mp3", url: url};
     });
+  return targets;
 }
 
 function toggleDownloading() { 
-  if(downloading) 
+  if(downloading === true) 
     sendMessage("stop");    
-  else 
-    sendMessage("start", getDownloadTargets());        
+  else {
+    sendMessage("start", getDownloadTargets());    
+  }    
 }
 
 function sendMessage(action, downloadTargets) { 
